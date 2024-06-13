@@ -10,6 +10,7 @@
 #   5. --plugins=PLUGINS (optional): Specify the plugins to install (comma-separated).
 # Author: Muzammil Hussain
 # Date Created: 01-08-2023
+# version: 1.0.0
 
 # Load configuration
 CONFIG_FILE=.env
@@ -90,7 +91,15 @@ PROJECT_NAME=$1
 # Check if required commands are available
 check_command wp "WP-CLI"
 check_command mysql "MySQL"
-check_command valet "Valet"
+
+if [ "$ENVIRONMENT" == "valet" ]; then
+    check_command valet "Valet"
+elif [ "$ENVIRONMENT" == "docker" ]; then
+    check_command docker "Docker"
+else
+    echo "Error: Invalid environment. Please set ENVIRONMENT to either 'valet' or 'docker' in .env file."
+    exit 1
+fi
 
 # Interactive mode if no project name provided
 if [ -z "$PROJECT_NAME" ]; then
@@ -168,9 +177,18 @@ if [ -f wp-config.php ]; then
 fi
 
 # Link Valet
-valet link $PROJECT_NAME
-echo "Site linked successfully. Access your new WordPress site at http://$PROJECT_NAME.test"
+if [ "$ENVIRONMENT" == "valet" ]; then
+    valet link $PROJECT_NAME
+    echo "Site linked successfully. Access your new WordPress site at http://$PROJECT_NAME.test"
 
-# Open site in default browser
-[[ "$OSTYPE" == "linux-gnu"* ]] && xdg-open "http://$PROJECT_NAME.test/wp-admin"
-[[ "$OSTYPE" == "darwin"* ]] && open "http://$PROJECT_NAME.test/wp-admin"
+    # Open site in default browser
+    [[ "$OSTYPE" == "linux-gnu"* ]] && xdg-open "http://$PROJECT_NAME.test/wp-admin"
+    [[ "$OSTYPE" == "darwin"* ]] && open "http://$PROJECT_NAME.test/wp-admin"
+elif [ "$ENVIRONMENT" == "docker" ]; then
+    setup_docker
+    echo "Site linked successfully. Access your new WordPress site at http://localhost:8000"
+
+    # Open site in default browser
+    [[ "$OSTYPE" == "linux-gnu"* ]] && xdg-open "http://localhost:8000/wp-admin"
+    [[ "$OSTYPE" == "darwin"* ]] && open "http://localhost:8000/wp-admin"
+fi
