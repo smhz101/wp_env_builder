@@ -113,12 +113,34 @@ create_env_file() {
     echo "Configuration saved."
 }
 
+# Function to display help message
+show_help() {
+    echo "Usage: ./setup_wordpress.sh PROJECT_NAME [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  --dir=DIR                Specify the directory to create the project in. Default is ~/Sites."
+    echo "  --remove                 Remove the project."
+    echo "  --description=DESCRIPTION Specify the plugin description. Default is 'A custom plugin'."
+    echo "  --plugins=PLUGINS        Specify the plugins to install (comma-separated)."
+    echo "  --themes=THEMES          Specify the themes to install (comma-separated)."
+    echo "  --both                   Set up both theme and plugin."
+    echo ""
+    echo "Example:"
+    echo "  ./setup_wordpress.sh my_project --dir=~/Sites --description='My Custom Plugin' --plugins='woocommerce,elementor'"
+}
+
 # Load config values
 if [ -f $CONFIG_FILE ]; then
     source $CONFIG_FILE
 else
     create_env_file
     source $CONFIG_FILE
+fi
+
+# Check for no arguments or --help
+if [ $# -eq 0 ] || [[ "$1" == "--help" ]]; then
+    show_help
+    exit 0
 fi
 
 # Variables
