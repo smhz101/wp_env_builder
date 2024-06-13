@@ -2,7 +2,12 @@
 
 # Script Name: Instant WordPress Environment Setup
 # Description: This script creates a new WordPress environment for a custom plugin.
-# Args: PROJECT_NAME
+# Args:
+#   1. PROJECT_NAME (required): The name of the project.
+#   2. --dir=DIR (optional): Specify the directory to create the project in. Default is ~/Sites.
+#   3. --remove (optional): Remove the project.
+#   4. --description=DESCRIPTION (optional): Specify the plugin description. Default is "A custom plugin".
+#   5. --plugins=PLUGINS (optional): Specify the plugins to install (comma-separated).
 # Author: Muzammil Hussain
 # Date Created: 01-08-2023
 
